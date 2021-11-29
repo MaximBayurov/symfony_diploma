@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <nav class="navbar navbar-light bg-light static-top">
+        <div class="container">
+            <span class="navbar-brand">BlaBlaArticle</span>
+            {% block navbarLinks %}{% endblock %}
+            <a class="btn btn-primary" href="{{ path('app_login') }}">Войти</a>
+        </div>
+    </nav>
+
+    <header class="masthead text-white text-center">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row">
+                {% block headerBanner %}{% endblock %}
+            </div>
+        </div>
+    </header>
+
+    {% block content %}{% endblock %}
+
+    <footer class="footer bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 h-100 text-center text-lg-left my-auto">
+                    <p class="text-muted small mb-4 mb-lg-0">&copy; BlaBlaArticle 2020.</p>
+                </div>
+                <div class="col-lg-6 h-100 text-center text-lg-right my-auto">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item mr-3">
+                            <a href="#"><i class="fab fa-facebook fa-2x fa-fw"></i></a>
+                        </li>
+                        <li class="list-inline-item mr-3">
+                            <a href="#"><i class="fab fa-vk fa-2x fa-fw"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#"><i class="fab fa-instagram fa-2x fa-fw"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+{% endblock %}
