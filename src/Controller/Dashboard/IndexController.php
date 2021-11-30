@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Dashboard;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class LoginController extends AbstractController
+class IndexController extends AbstractController
 {
-    #[Route('/login', name: 'app_login')]
+    #[Route('/dashboard/', name: 'app_dashboard')]
     public function index(): Response
     {
-        return $this->render('login.html.twig', [
+        return $this->render('dashboard/index.html.twig', [
         ]);
     }
 }
