@@ -13,22 +13,28 @@
                 <div class="card card-signin my-5">
                     <div class="card-body">
                         <h5 class="card-title text-center">Авторизация</h5>
-                        <div class="alert alert-danger" role="alert">
-                            Неверный логин или пароль
-                        </div>
-                        <form class="form-signin">
+
+                        {% if error %}
+                        <div class="alert alert-danger" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                        {% endif %}
+
+                        <form class="form-signin" method="post">
                             <div class="form-label-group">
-                                <input type="email" id="inputEmail" class="form-control" placeholder="Ваш Email" required autofocus>
+                                <input name="email" type="email" id="inputEmail" class="form-control" placeholder="Ваш Email" required autofocus>
                                 <label for="inputEmail">Ваш Email</label>
                             </div>
 
                             <div class="form-label-group">
-                                <input type="password" id="inputPassword" class="form-control" placeholder="Пароль" required>
+                                <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Пароль" required>
                                 <label for="inputPassword">Пароль</label>
                             </div>
 
+                            <input type="hidden" name="_csrf_token"
+                                   value="{{ csrf_token('authenticate') }}"
+                            >
+
                             <div class="custom-control custom-checkbox mb-3">
-                                <input type="checkbox" class="custom-control-input" id="customCheck1">
+                                <input type="checkbox" class="custom-control-input" name="_remember_me" id="customCheck1">
                                 <label class="custom-control-label" for="customCheck1">Запомнить меня</label>
                             </div>
                             <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Войти</button>

@@ -16,6 +16,8 @@ framework:
     #fragments: true
     php_errors:
         log: true
+    translator:
+        fallback: ru
 
 when@test:
     framework:

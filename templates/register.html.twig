@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% form_theme registrationForm 'form/security_theme.html.twig' %}
 
 {% block title %}Регистрация на BlaBlaArticle{% endblock %}
 
@@ -13,33 +14,31 @@
                 <div class="card card-signin my-5">
                     <div class="card-body">
                         <h5 class="card-title text-center">Регистрация</h5>
+
+                        {% if app.session.flashBag.peek('flash_message')|length > 0 %}
                         <div class="alert alert-success" role="alert">
-                            Для завершения регистрации подтвердите ваш email
+                            {% for message in app.flashes('flash_message') %}
+                                <p>{{ message }}</p>
+                            {%  endfor %}
                         </div>
-                        <form class="form-signin">
-                            <div class="form-label-group">
-                                <input type="text" id="inputName" class="form-control" placeholder="Ваше имя" required autofocus>
-                                <label for="inputName">Ваше имя</label>
-                            </div>
-                            <div class="form-label-group">
-                                <input type="email" id="inputEmail" class="form-control" placeholder="Ваш Email" required>
-                                <label for="inputEmail">Ваш Email</label>
-                            </div>
+                        {% endif %}
 
-                            <div class="form-label-group">
-                                <input type="password" id="inputPassword" class="form-control" placeholder="Пароль" required>
-                                <label for="inputPassword">Пароль</label>
-                            </div>
+                        {{ form_errors(registrationForm.fullName) }}
+                        {{ form_errors(registrationForm.plainPassword.first) }}
+                        {{ form_errors(registrationForm.plainPassword.second) }}
+                        {{ form_errors(registrationForm.email) }}
 
-                            <div class="form-label-group">
-                                <input type="password" id="inputConfirmPassword" class="form-control" placeholder="Подтверждение пароля" required>
-                                <label for="inputConfirmPassword">Подтверждение пароля</label>
-                            </div>
+                        {{ form_start(registrationForm, {
+                            attr: {
+                                class: 'form-signin'
+                            }
+                        }) }}
+                            {{ form_rest(registrationForm) }}
 
                             <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Регистрация</button>
                             <hr class="my-4">
                             <div class="text-center"><a href="{{ path('app_login') }}">Я уже зарегистрирован</a></div>
-                        </form>
+                        {{ form_end(registrationForm) }}
                     </div>
                 </div>
             </div>
