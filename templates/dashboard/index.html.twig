@@ -3,17 +3,88 @@
 {% block title %}Hello IndexController!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<div class="d-flex" id="wrapper">
 
-<div class="example-wrapper">
+        <div class="bg-light border-right" id="sidebar-wrapper">
+            <div class="sidebar-heading">BlaBlaArticle</div>
+            <div class="list-group list-group-flush">
+                <a href="dashboard.html"                class="list-group-item list-group-item-action active">Рабочий стол</a>
+                <a href="dashboard_create_article.html" class="list-group-item list-group-item-action bg-light">Создать статью</a>
+                <a href="dashboard_history.html"        class="list-group-item list-group-item-action bg-light">История статей</a>
+                <a href="dashboard_subscription.html"   class="list-group-item list-group-item-action bg-light">Подписка</a>
+                <a href="dashboard_profile.html"        class="list-group-item list-group-item-action bg-light">Профиль</a>
+                <a href="dashboard_modules.html"        class="list-group-item list-group-item-action bg-light">Модули генератора</a>
+            </div>
+        </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/home/maxim/PhpstormProjects/symfony_diploma/src/Controller/Dashboard/IndexController.php'|file_link(0) }}">src/Controller/Dashboard/IndexController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/home/maxim/PhpstormProjects/symfony_diploma/templates/dashboard/index/index.html.twig'|file_link(0) }}">templates/dashboard/index/index.html.twig</a></code></li>
-    </ul>
-</div>
+        <div id="page-content-wrapper">
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <button class="btn btn-primary" id="menu-toggle">Скрыть меню</button>
+
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Показать/Скрыть навигацию">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="#">Выйти</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="container-fluid">
+                <h1 class="mt-4">Рабочий стол</h1>
+                <div class="row">
+                    <div class="col-xl-8 border-right">
+                        {% if app.session.flashBag.peek('flash_message')|length > 0 %}
+                            {% for message in app.flashes('flash_message') %}
+                                <div class="alert alert-{{ message.type }} " role="alert">
+                                    {{ message.text }}
+                                </div>
+                            {%  endfor %}
+                        {% endif %}
+                        <div class="card-columns dashboard">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">13</h5>
+                                    <p class="card-text">Всего статей создано.</p>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">8</h5>
+                                    <p class="card-text">Создано в этом месяце.</p>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">PLUS</h5>
+                                    <p class="card-text">Ваш уровень подписки.</p>
+                                    <a href="#" class="btn btn-primary">Улучшить</a>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Создать статью</h5>
+                                    <a href="#" class="btn btn-primary">Создать</a>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Почему квадрат не круглый?</h5>
+                                    <p class="card-text">При генерации контента <b>круг</b> статьи, вы можете наполнить его нужными словами <b>круг</b> для вашего бизнеса. Столько <b>круг</b> сколько <b>круг</b> нужно. Хоть все ими <b>круг</b> <b>круг</b> <b>круг</b> заполоните!.</p>
+                                    <a href="#" class="btn btn-primary">Подробнее</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
 {% endblock %}

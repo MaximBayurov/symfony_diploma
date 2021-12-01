@@ -1,6 +1,7 @@
 {% extends 'base.content.html.twig' %}
 
 {% block title %}Hello TryController!{% endblock %}
+{% form_theme demoArticleForm 'form/security_theme.html.twig' %}
 
 {% block headerBanner %}
     <div class="col-xl-9 mx-auto">
@@ -16,22 +17,24 @@
 
                     <h2 class="card-title text-center mb-4">Создание статьи</h2>
 
-                    <div class="alert alert-info" role="alert">
-                        Чтобы создать статью по настоящему <a href="{{ path('app_register') }}">Зарегистрируйтесь</a>
-                    </div>
-
-                    <form class="form-signin">
-                        <div class="form-label-group">
-                            <input type="email" id="articleTitle" class="form-control" placeholder="Заголовок статьи" required autofocus value="Тестовая статья" disabled>
-                            <label for="articleTitle">Заголовок статьи</label>
+                    {% if demoArticleCreated %}
+                        <div class="alert alert-info" role="alert">
+                            Чтобы создать статью по настоящему <a
+                                    href="{{ path('app_register') }}">Зарегистрируйтесь</a>
                         </div>
-                        <div class="form-label-group">
-                            <input type="email" id="articleWord" class="form-control" placeholder="Продвигаемое слово" required disabled>
-                            <label for="articleWord">Продвигаемое слово</label>
-                        </div>
+                    {% endif %}
 
-                        <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit" disabled>Попробовать</button>
-                    </form>
+                    {{ form_errors(demoArticleForm.title) }}
+                    {{ form_errors(demoArticleForm.words) }}
+
+                    {{ form_start(demoArticleForm, {
+                        attr: {
+                            class: 'form-signin'
+                        }
+                    }) }}
+                    {{ form_rest(demoArticleForm) }}
+                    {{ form_end(demoArticleForm) }}
+
                 </div>
             </div>
         </div>
@@ -44,12 +47,14 @@
             <div class="row">
                 <div class="col-lg-12 mx-auto">
 
-                    <h2 class="card-title text-center mb-4">Тестовая статья</h2>
+                    <h2 class="card-title text-center mb-4">{{ article.title ?? 'Тестовая статья' }}</h2>
 
                     <div class="row">
                         <div class="p-3">
                             <h2>Добавляйте свои слова</h2>
-                            <p class="lead mb-0">При генерации контента статьи, вы можете наполнить его нужными словами для вашего бизнеса. Столько сколько нужно. Хоть все ими заполоните!</p>
+                            <p class="lead mb-0">
+                                {{ article.content[0] ?? defaultContent[0] }}
+                            </p>
                         </div>
                     </div>
                     <div class="row">
@@ -57,8 +62,12 @@
                             <div class="media">
                                 <div class="media-body">
                                     <h2>Вставляйте изображения</h2>
-                                    <p class="lead mb-0">Надоели стандартные красивые изображения. Прикрепляйте к вашим статьям свою уникальные фотографии. Смазанные, с пальцем на пол фотографии, с кривым лицом. Все пойдет - вы здесь главный!</p>
-                                    <p class="lead mb-0">Надоели стандартные красивые изображения. Прикрепляйте к вашим статьям свою уникальные фотографии. Смазанные, с пальцем на пол фотографии, с кривым лицом. Все пойдет - вы здесь главный!</p>
+                                    <p class="lead mb-0">
+                                        {{ article.content[1] ?? defaultContent[1] }}
+                                    </p>
+                                    <p class="lead mb-0">
+                                        {{ article.content[2] ?? defaultContent[1] }}
+                                    </p>
                                 </div>
                                 <img class="ml-3" src="img/bg-showcase-2.jpg" width="518" height="345" alt="">
                             </div>
@@ -68,7 +77,9 @@
                     <div class="row">
                         <div class="p-3">
                             <h2>Интегрируйтесь по API</h2>
-                            <p class="lead mb-0">Придумайте и настройте свою собственную интеграцию с сервисом. Нужно ответить на комментарий в соц.сети - получите его по API. Нужно написать новую статью по программированию - получите ее по API. Хотите вкусно покушать - сходите за едой, а статью пускай за вас напишет API!</p>
+                            <p class="lead mb-0">
+                                {{ article.content[3] ?? defaultContent[2] }}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -87,7 +98,8 @@
                 <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
                     <div class="form-row">
                         <div class="col-12 col-md-6 mx-auto">
-                            <a href="{{ path('app_register') }}" class="btn btn-block btn-lg btn-primary">Регистрация</a>
+                            <a href="{{ path('app_register') }}"
+                               class="btn btn-block btn-lg btn-primary">Регистрация</a>
                         </div>
                     </div>
                 </div>
@@ -95,3 +107,4 @@
         </div>
     </section>
 {% endblock %}
+

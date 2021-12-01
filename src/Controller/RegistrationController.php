@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\FlashMessage;
 use App\Entity\User;
 use App\Events\UserRegisterEvent;
 use App\Form\RegistrationFormType;
@@ -18,6 +19,7 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
@@ -28,8 +30,18 @@ class RegistrationController extends AbstractController
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
         EntityManagerInterface $entityManager,
-        EventDispatcherInterface $dispatcher
+        EventDispatcherInterface $dispatcher,
+        TranslatorInterface $translator
     ): Response {
+    
+        if ($this->getUser()) {
+            $this->addFlash('flash_message', new FlashMessage(
+                $translator->trans('You are already logged in')
+            ));
+            
+            return $this->redirectToRoute('app_dashboard');
+        }
+        
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);

@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\User;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -13,7 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class RegistrationFormType extends AbstractType
+class RegistrationFormType extends BaseFormType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -38,6 +37,7 @@ class RegistrationFormType extends AbstractType
                         'minMessage' => 'Слишком короткий пароль. Должен быть не менее 6 символов',
                     ]),
                 ],
+                'error_mapping' => [],
                 'invalid_message' => "Пароли должны совпадать"
             ])
         ;
@@ -48,21 +48,5 @@ class RegistrationFormType extends AbstractType
         $resolver->setDefaults([
             'data_class' => User::class,
         ]);
-    }
-    
-    private function setDefaultOptions(string $label): array
-    {
-        return [
-            'label' => $label,
-            'attr' => [
-                'placeholder' => $label,
-                'class' => 'form-control'
-            ],
-            'row_attr' => [
-                'class' => 'form-label-group'
-            ],
-            'error_mapping' => false,
-            'required' => true,
-        ];
     }
 }
