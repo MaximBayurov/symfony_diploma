@@ -47,13 +47,13 @@
             <div class="row">
                 <div class="col-lg-12 mx-auto">
 
-                    <h2 class="card-title text-center mb-4">{{ article.title ?? 'Тестовая статья' }}</h2>
+                    <h2 class="card-title text-center mb-4">{{ article.title }}</h2>
 
                     <div class="row">
                         <div class="p-3">
                             <h2>Добавляйте свои слова</h2>
                             <p class="lead mb-0">
-                                {{ article.content[0] ?? defaultContent[0] }}
+                                {{ article.content[0] }}
                             </p>
                         </div>
                     </div>
@@ -63,10 +63,10 @@
                                 <div class="media-body">
                                     <h2>Вставляйте изображения</h2>
                                     <p class="lead mb-0">
-                                        {{ article.content[1] ?? defaultContent[1] }}
+                                        {{ article.content[1] }}
                                     </p>
                                     <p class="lead mb-0">
-                                        {{ article.content[2] ?? defaultContent[1] }}
+                                        {{ article.content[2] }}
                                     </p>
                                 </div>
                                 <img class="ml-3" src="img/bg-showcase-2.jpg" width="518" height="345" alt="">
@@ -78,7 +78,7 @@
                         <div class="p-3">
                             <h2>Интегрируйтесь по API</h2>
                             <p class="lead mb-0">
-                                {{ article.content[3] ?? defaultContent[2] }}
+                                {{ article.content[3] }}
                             </p>
                         </div>
                     </div>

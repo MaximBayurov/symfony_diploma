@@ -13,11 +13,9 @@ class DemoArticleGenerator
     
     public function generate(DemoArticle $article, array $defaultContent): array
     {
-        return [
-            $this->pasteWords->paste($defaultContent[0], $article->getWords()),
-            $this->pasteWords->paste($defaultContent[1], $article->getWords()),
-            $this->pasteWords->paste($defaultContent[1], $article->getWords()),
-            $this->pasteWords->paste($defaultContent[2], $article->getWords()),
-        ];
+        array_walk($defaultContent, function (&$item) use ($article) {
+            $item = $this->pasteWords->paste($item, $article->getWords());
+        });
+        return $defaultContent;
     }
 }

@@ -67,4 +67,12 @@ class DemoArticle
         
         $this->content = $content;
     }
+    
+    public function __sleep(): array
+    {
+        return [
+            'title',
+            'words',
+        ];
+    }
 }
