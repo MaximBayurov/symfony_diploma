@@ -1,0 +1,39 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% form_theme userForm 'form/security_theme.html.twig' %}
+
+{% block content %}
+    <h1 class="mt-4">Профиль</h1>
+    <div class="row">
+
+        <div class="col-xl-6">
+            {% if app.session.flashBag.peek('profile_flash_message')|length > 0 %}
+                {% for message in app.flashes('profile_flash_message') %}
+                    <div class="alert alert-{{ message.type }} " role="alert">
+                        {{ message.text }}
+                    </div>
+                {%  endfor %}
+            {% endif %}
+
+            <div class="card my-4">
+                <div class="card-body" data-controller="createToken">
+                    <p>Ваш API токен: <span data-token-span>{{ token ?? '<span class="text-muted">у вас пока нет токена</span>' }}</span></p>
+                    <button class="btn btn-outline-primary" data-create-token-button>
+                        Создать новый
+                    </button>
+                </div>
+            </div>
+
+            {{ form_errors(userForm.fullName) }}
+            {{ form_errors(userForm.plainPassword.first) }}
+            {{ form_errors(userForm.plainPassword.second) }}
+            {{ form_errors(userForm.email) }}
+
+            {{ form_start(userForm) }}
+            {{ form_rest(userForm) }}
+
+            <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Изменить</button>
+            {{ form_end(userForm) }}
+        </div>
+    </div>
+{% endblock %}
