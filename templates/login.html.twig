@@ -20,7 +20,7 @@
 
                         <form class="form-signin" method="post">
                             <div class="form-label-group">
-                                <input name="email" type="email" id="inputEmail" class="form-control" placeholder="Ваш Email" required autofocus>
+                                <input name="email" type="email" id="inputEmail" class="form-control" placeholder="Ваш Email" value="{{ last_username }}" required autofocus>
                                 <label for="inputEmail">Ваш Email</label>
                             </div>
 
@@ -34,7 +34,7 @@
                             >
 
                             <div class="custom-control custom-checkbox mb-3">
-                                <input type="checkbox" class="custom-control-input" name="_remember_me" id="customCheck1">
+                                <input type="checkbox" class="custom-control-input" name="_remember_me" id="customCheck1" {% if app.request.session.get('_remember_me') is same as('on') %}checked{% endif %}>
                                 <label class="custom-control-label" for="customCheck1">Запомнить меня</label>
                             </div>
                             <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Войти</button>
