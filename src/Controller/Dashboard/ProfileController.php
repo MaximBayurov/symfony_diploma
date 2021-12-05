@@ -1,0 +1,62 @@
+<?php
+
+namespace App\Controller\Dashboard;
+
+use App\Entity\FlashMessage;
+use App\Entity\User;
+use App\Events\UserRegisterEvent;
+use App\Form\RegistrationFormType;
+use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
+class ProfileController extends AbstractController
+{
+    #[Route('/dashboard/profile', name: 'app_dashboard_profile')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function index(
+        Request $request,
+        UserPasswordHasherInterface $userPasswordHasher,
+        EntityManagerInterface $entityManager,
+        TranslatorInterface $translator
+    ): Response {
+        
+        /**
+         * @var PasswordAuthenticatedUserInterface $user
+         */
+        $user = $this->getUser();
+        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+        
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('plainPassword')->getData()
+                )
+            );
+        
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $this->addFlash('profile_flash_message', new FlashMessage(
+                $translator->trans('Profile changed successfully')
+            ));
+        
+            return $this->redirectToRoute('app_dashboard_profile');
+        }
+    
+        return $this->render('dashboard/profile.html.twig', [
+            'userForm' => $form->createView(),
+            'token' => $user->getApiToken()?->getToken()
+        ]);
+    }
+}

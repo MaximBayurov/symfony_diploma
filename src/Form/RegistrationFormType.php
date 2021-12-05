@@ -37,7 +37,6 @@ class RegistrationFormType extends BaseFormType
                         'minMessage' => 'Слишком короткий пароль. Должен быть не менее 6 символов',
                     ]),
                 ],
-                'error_mapping' => [],
                 'invalid_message' => "Пароли должны совпадать"
             ])
         ;

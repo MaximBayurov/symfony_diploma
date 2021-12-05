@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
- * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
+ * @UniqueEntity(fields={"email"}, message="Аккаунт с такой почтой уже существует")
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -50,6 +50,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="boolean")
      */
     private $isVerified = false;
+
+    /**
+     * @ORM\OneToOne(targetEntity=ApiToken::class, mappedBy="user", cascade={"persist", "remove"})
+     */
+    private $apiToken;
 
     public function getId(): ?int
     {
@@ -160,6 +165,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getApiToken(): ?ApiToken
+    {
+        return $this->apiToken;
+    }
+
+    public function setApiToken(ApiToken $apiToken): self
+    {
+        // set the owning side of the relation if necessary
+        if ($apiToken->getUser() !== $this) {
+            $apiToken->setUser($this);
+        }
+
+        $this->apiToken = $apiToken;
 
         return $this;
     }
