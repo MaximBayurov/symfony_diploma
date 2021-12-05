@@ -56,6 +56,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $apiToken;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Subscription::class, mappedBy="user", cascade={"persist", "remove"})
+     */
+    private $subscription;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -184,5 +189,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->apiToken = $apiToken;
 
         return $this;
+    }
+
+    public function getSubscription(): Subscription
+    {
+        return
+            $this->isValidSubscription()
+            ? $this->subscription
+            : (new Subscription())
+                ->setLevel(Subscription::LEVEL_TYPES['FREE']['VALUE'])
+                ->setUser($this)
+        ;
+    }
+
+    public function setSubscription(Subscription $subscription): self
+    {
+        // set the owning side of the relation if necessary
+        if ($subscription->getUser() !== $this) {
+            $subscription->setUser($this);
+        }
+
+        $this->subscription = $subscription;
+
+        return $this;
+    }
+    
+    private function isValidSubscription(): bool
+    {
+        return
+            $this->subscription instanceof Subscription
+            && $this->subscription->getExpiresAt() > new \DateTimeImmutable('now')
+        ;
     }
 }

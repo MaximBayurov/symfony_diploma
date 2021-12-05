@@ -1,13 +1,22 @@
 <?php
 
-namespace App\EventSubscribers\User;
+namespace App\EventSubscribers;
 
 use App\Entity\FlashMessage;
 use App\Events\User\RegisterEvent;
-use App\EventSubscribers\OnUserEventSubscriber;
+use App\Services\Mailer;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-class OnRegisterSubscriber extends  OnUserEventSubscriber
+class OnRegisterSubscriber implements EventSubscriberInterface
 {
+    
+    public function __construct(
+        private Mailer $mailer,
+        protected TranslatorInterface $translator,
+    ){
+    }
+    
     /**
      * @inheritDoc
      */
@@ -22,7 +31,7 @@ class OnRegisterSubscriber extends  OnUserEventSubscriber
     {
         $user = $event->getUser();
     
-        $this->sendEmailConfirmation($user);
+        $this->mailer->sendEmailConfirmation($user);
     
         $event->setFlashMessages(new FlashMessage(
             $this->translator->trans('Confirm your email to complete registration')

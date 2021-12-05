@@ -1,13 +1,21 @@
 <?php
 
-namespace App\EventSubscribers\User;
+namespace App\EventSubscribers;
 
 use App\Entity\FlashMessage;
 use App\Events\User\BeforeProfileChangedEvent;
-use App\EventSubscribers\OnUserEventSubscriber;
+use App\Services\Mailer;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-class OnBeforeProfileChangedSubscriber extends  OnUserEventSubscriber
+class OnBeforeProfileChangedSubscriber implements EventSubscriberInterface
 {
+    public function __construct(
+        private Mailer $mailer,
+        private TranslatorInterface $translator,
+    ){
+    }
+    
     /**
      * @inheritDoc
      */
@@ -23,7 +31,7 @@ class OnBeforeProfileChangedSubscriber extends  OnUserEventSubscriber
         $changed = $event->getUser();
         $current = $event->getCurrentUser();
         if ($changed->getEmail() !== $current->getEmail()) {
-            $this->sendEmailConfirmation($changed);
+            $this->mailer->sendEmailConfirmation($changed);
             $event->setFlashMessages(new FlashMessage(
                 $this->translator->trans('Confirm your email to change it')
             ));
