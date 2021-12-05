@@ -21,12 +21,12 @@
                             <div class="card-body">
                                 <h5 class="card-title text-uppercase text-center {% if type.isCurrent %}current text-warning{% else %}text-muted{% endif %}">
                                     {% if type.isCurrent %}<i class="fas fa-check"></i> {% endif %}
-                                    {{ type.value }}
+                                    {{ type.text }}
                                 </h5>
                                 <h6 class="card-price text-center">${{ type.price }}<span class="period">/неделя</span></h6>
                                 <hr>
                                 <ul class="fa-ul">
-                                    {% if type.sort in [0,1] %}
+                                    {% if type.value in [0,1] %}
                                         <li><span class="fa-li"><i class="fas fa-check"></i></span>Возможность создать более 1 статьи</li>
                                     {% else %}
                                         <li><span class="fa-li"><i class="fas fa-check"></i></span><strong>Безлимитная генерация статей для вашего аккаунта</strong></li>
@@ -34,13 +34,13 @@
 
                                     <li><span class="fa-li"><i class="fas fa-check"></i></span>Базовые возможности генератора</li>
 
-                                    {% if type.sort in [0] %}
+                                    {% if type.value in [0] %}
                                         <li class="text-muted"><span class="fa-li"><i class="fas fa-times"></i></span>Продвинутые возможности генератора</li>
                                     {% else %}
                                         <li><span class="fa-li"><i class="fas fa-check"></i></span>Продвинутые возможности генератора</li>
                                     {% endif %}
 
-                                    {% if type.sort in [0,1] %}
+                                    {% if type.value in [0,1] %}
                                         <li class="text-muted"><span class="fa-li"><i class="fas fa-times"></i></span>Свои модули</li>
                                     {% else %}
                                         <li><span class="fa-li"><i class="fas fa-check"></i></span>Свои модули</li>
@@ -52,7 +52,7 @@
                                         <a onclick="(e)=>{e.preventDefault()}" class="btn btn-block btn-secondary text-uppercase" disabled>Текущий уровень</a>
                                     {% else %}
                                         <a href="{{ path('app_dashboard_subscription') }}" class="btn btn-block btn-primary text-uppercase"
-                                           data-controller="subscribeButton" data-subscribtion-type="{{ type.value }}">
+                                           data-controller="subscribeButton" data-subscribtion-type="{{ type.text }}">
                                             Оформить
                                         </a>
                                     {% endif %}

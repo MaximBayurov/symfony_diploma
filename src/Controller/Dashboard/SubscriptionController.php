@@ -30,13 +30,18 @@ class SubscriptionController extends AbstractController
         $typesFormatted = [];
         foreach (Subscription::LEVEL_TYPES as $levelType) {
             $typesFormatted[] = [
-                'value' => $levelType['VALUE'],
+                'text' => $levelType['TEXT'],
                 'price' => $levelType['PRICE'],
                 'sort' => $levelType['SORT'],
+                'value' => $levelType['VALUE'],
                 'isCurrent' => $currentLevel['VALUE'] === $levelType['VALUE'],
-                'showButton' => $currentLevel['SORT'] <= $levelType['SORT'],
+                'showButton' => $currentLevel['VALUE'] <= $levelType['VALUE'],
             ];
         }
+        
+        usort($typesFormatted, function ($a, $b) {
+            return $a['sort'] <=> $b['sort'];
+        });
         
         return $typesFormatted;
     }

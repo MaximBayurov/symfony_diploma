@@ -59,7 +59,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\OneToOne(targetEntity=Subscription::class, mappedBy="user", cascade={"persist", "remove"})
      */
-    private $subscription;
+    private ?Subscription $subscription;
 
     public function getId(): ?int
     {
@@ -194,10 +194,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getSubscription(): Subscription
     {
         return
-            $this->isValidSubscription()
+            $this->subscription && $this->subscription->isValid()
             ? $this->subscription
             : (new Subscription())
-                ->setLevel(Subscription::LEVEL_TYPES['FREE']['VALUE'])
+                ->setLevel(Subscription::LEVEL_TYPES['FREE']['TEXT'])
                 ->setUser($this)
         ;
     }
@@ -212,13 +212,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->subscription = $subscription;
 
         return $this;
-    }
-    
-    private function isValidSubscription(): bool
-    {
-        return
-            $this->subscription instanceof Subscription
-            && $this->subscription->getExpiresAt() > new \DateTimeImmutable('now')
-        ;
     }
 }

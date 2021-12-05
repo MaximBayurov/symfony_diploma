@@ -13,19 +13,22 @@ class Subscription
 {
     public const LEVEL_TYPES = [
         'FREE' => [
-            'VALUE' => 'FREE',
+            'TEXT' => 'FREE',
+            'VALUE' => 0,
             'PRICE' => 0,
-            'SORT' => 0,
+            'SORT' => 10,
         ],
         'PLUS' => [
-            'VALUE' => 'PLUS',
+            'TEXT' => 'PLUS',
+            'VALUE' => 1,
             'PRICE' => 9,
-            'SORT' => 1,
+            'SORT' => 20,
         ],
         'PRO' => [
-            'VALUE' => 'PRO',
+            'TEXT' => 'PRO',
+            'VALUE' => 2,
             'PRICE' => 49,
-            'SORT' => 2,
+            'SORT' => 30,
         ],
     ];
     /**
@@ -102,6 +105,11 @@ class Subscription
     
     public function isFree(): bool
     {
-        return $this->level === self::LEVEL_TYPES['FREE']['VALUE'];
+        return $this->level === self::LEVEL_TYPES['FREE']['TEXT'];
+    }
+    
+    public function isValid(): bool
+    {
+        return $this->getExpiresAt() > new \DateTimeImmutable('now');
     }
 }
