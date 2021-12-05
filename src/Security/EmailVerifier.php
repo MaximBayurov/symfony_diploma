@@ -30,7 +30,10 @@ class EmailVerifier
             $verifyEmailRouteName,
             $user->getId(),
             $user->getEmail(),
-            ['id' => $user->getId()]
+            [
+                'id' => $user->getId(),
+                'email' => $user->getEmail(),
+            ]
         );
 
         $context = $email->getContext();
@@ -48,10 +51,12 @@ class EmailVerifier
      */
     public function handleEmailConfirmation(Request $request, UserInterface $user): void
     {
-        $this->verifyEmailHelper->validateEmailConfirmation($request->getUri(), $user->getId(), $user->getEmail());
-
+        $email = $request->get('email');
+        
+        $this->verifyEmailHelper->validateEmailConfirmation($request->getUri(), $user->getId(), $email);
+        
         $user->setIsVerified(true);
-
+        $user->setEmail($email);
         $this->entityManager->persist($user);
         $this->entityManager->flush();
     }

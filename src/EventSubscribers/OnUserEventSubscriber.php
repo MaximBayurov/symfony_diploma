@@ -2,36 +2,22 @@
 
 namespace App\EventSubscribers;
 
-use App\Events\UserRegisterEvent;
 use App\Security\EmailVerifier;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Mime\Address;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-class OnUserRegisterSubscriber implements EventSubscriberInterface
+abstract class OnUserEventSubscriber implements EventSubscriberInterface
 {
-    private EmailVerifier $emailVerifier;
-    
-    public function __construct(EmailVerifier $emailVerifier)
-    {
-        $this->emailVerifier = $emailVerifier;
+    public function __construct(
+        protected EmailVerifier $emailVerifier,
+        protected TranslatorInterface $translator,
+    ){
     }
     
-    /**
-     * @inheritDoc
-     */
-    public static function getSubscribedEvents(): array
+    protected function sendEmailConfirmation($user)
     {
-        return [
-            UserRegisterEvent::class => 'sendVerifyEmail'
-        ];
-    }
-    
-    public function sendVerifyEmail(UserRegisterEvent $event)
-    {
-    
-        $user = $event->getUser();
-    
         $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
             (new TemplatedEmail())
                 ->from(new Address('mailbot@symfony.diploma.com', 'Mail Bot'))
