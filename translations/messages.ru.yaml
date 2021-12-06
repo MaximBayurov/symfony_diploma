@@ -4,3 +4,6 @@ You are already logged in: Вы уже авторизованы, так что �
 Email address has been successfully verified!: 'Адрес электронной почты был успешно подтверждён!'
 Confirm your email to change it: 'Подтвердите вашу почту для её изменения'
 "level subscribed, up to expiresAt": 'Подписка level оформлена, до expiresAt'
+"Module #id successfully removed": 'Модуль #id успешно удалён'
+To add your own modules, you need a PRO subscription: 'Чтобы добавлять свои модули, нужна подписка уровня PRO'
+Module added successfully: 'Модуль успешно добавлен'

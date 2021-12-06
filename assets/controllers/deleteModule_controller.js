@@ -11,21 +11,20 @@ export default class extends Controller {
 				return;
 			}
 
-			let subscribeButtons = $('.container-fluid').find('[data-controller="subscribeButton"]').get();
+			let subscribeButtons = $('.container-fluid').find('[data-controller="deleteModule"]').get();
 			subscribeButtons.forEach((element) => {
 				element.disabled = true;
 			})
 
-			fetch('/api/v1/subscribe/', {
+			let moduleID = event.currentTarget.dataset.moduleId;
+
+			fetch(`/api/v1/modules/${moduleID}/delete`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json;charset=utf-8'
 				},
-				body: JSON.stringify({
-					'level': event.target.dataset.subscribtionType
-				})
 			}).finally(() => {
-				window.location = event.target.href
+				window.location = event.currentTarget.href
 			});
 		})
 	}
