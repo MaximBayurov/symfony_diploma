@@ -16,11 +16,11 @@
                         <h5 class="card-title text-center">Регистрация</h5>
 
                         {% if app.session.flashBag.peek('flash_message')|length > 0 %}
-                        <div class="alert alert-success" role="alert">
                             {% for message in app.flashes('flash_message') %}
-                                <p>{{ message }}</p>
+                            <div class="alert alert-{{ message.type }}" role="alert">
+                                <p>{{ message.text }}</p>
+                            </div>
                             {%  endfor %}
-                        </div>
                         {% endif %}
 
                         {{ form_errors(registrationForm.fullName) }}

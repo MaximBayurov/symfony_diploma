@@ -2,9 +2,9 @@
 
 namespace App\Controller\Dashboard;
 
-use App\Entity\FlashMessage;
 use App\Entity\User;
-use App\Events\UserRegisterEvent;
+use App\Events\User\BeforeProfileChangedEvent;
+use App\Events\UserEvent;
 use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -15,7 +15,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ProfileController extends AbstractController
 {
@@ -25,12 +24,14 @@ class ProfileController extends AbstractController
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
         EntityManagerInterface $entityManager,
-        TranslatorInterface $translator
+        EventDispatcherInterface $dispatcher
     ): Response {
         
         /**
-         * @var PasswordAuthenticatedUserInterface $user
+         * @var PasswordAuthenticatedUserInterface|User $user
+         * @var PasswordAuthenticatedUserInterface|User $currentUser
          */
+        $currentUser = clone $this->getUser();
         $user = $this->getUser();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
@@ -43,14 +44,20 @@ class ProfileController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             );
-        
+    
+            /**
+             * @var UserEvent $event
+             */
+            $event = $dispatcher->dispatch(new BeforeProfileChangedEvent($user, $currentUser));
+            foreach ($event->getFlashMessages() as $flashMessage) {
+                $this->addFlash('flash_message',
+                    $flashMessage
+                );
+            }
+            
             $entityManager->persist($user);
             $entityManager->flush();
-
-            $this->addFlash('profile_flash_message', new FlashMessage(
-                $translator->trans('Profile changed successfully')
-            ));
-        
+            
             return $this->redirectToRoute('app_dashboard_profile');
         }
     

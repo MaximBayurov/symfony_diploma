@@ -4,7 +4,8 @@ namespace App\Controller;
 
 use App\Entity\FlashMessage;
 use App\Entity\User;
-use App\Events\UserRegisterEvent;
+use App\Events\User as UserEvents;
+use App\Events\UserEvent;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
@@ -56,9 +57,14 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
     
-            $event = $dispatcher->dispatch(new UserRegisterEvent($user));
-            if(! $event->getUser()->isVerified()) {
-                $this->addFlash('flash_message', 'Для завершения регистрации подтвердите ваш email');
+            /**
+             * @var UserEvent $event
+             */
+            $event = $dispatcher->dispatch(new UserEvents\RegisterEvent($user));
+            foreach ($event->getFlashMessages() as $flashMessage) {
+                $this->addFlash('flash_message',
+                    $flashMessage
+                );
             }
             
             return $this->redirectToRoute('app_register');
@@ -75,7 +81,8 @@ class RegistrationController extends AbstractController
         UserRepository $userRepository,
         UserAuthenticatorInterface $userAuthenticator,
         LoginFormAuthenticator $authenticator,
-        EmailVerifier $emailVerifier
+        EmailVerifier $emailVerifier,
+        TranslatorInterface $translator
     ): Response {
         $id = $request->get('id');
     
@@ -95,7 +102,9 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('app_register');
         }
 
-        $this->addFlash('success', 'Адрес электронной почты был успешно подтверждён!');
+        $this->addFlash('flash_message', new FlashMessage(
+            $translator->trans('Email address has been successfully verified!')
+        ));
 
         return $userAuthenticator->authenticateUser(
             $user,

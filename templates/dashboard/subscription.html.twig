@@ -1,0 +1,69 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block content %}
+<h1 class="mt-4">Подписка</h1>
+<div class="row">
+
+    <div class="col-xl-8">
+        {% if app.session.flashBag.peek('flash_message')|length > 0 %}
+            {% for message in app.flashes('flash_message') %}
+                <div class="alert alert-{{ message.type }} " role="alert">
+                    {{ message.text }}
+                </div>
+            {%  endfor %}
+        {% endif %}
+        <section class="pricing py-2 row">
+            <div class="container">
+                <div class="row">
+                    {% for type in subscriptionTypes %}
+                    <div class="col-lg-4">
+                        <div class="card mb-5 mb-lg-0">
+                            <div class="card-body">
+                                <h5 class="card-title text-uppercase text-center {% if type.isCurrent %}current text-warning{% else %}text-muted{% endif %}">
+                                    {% if type.isCurrent %}<i class="fas fa-check"></i> {% endif %}
+                                    {{ type.text }}
+                                </h5>
+                                <h6 class="card-price text-center">${{ type.price }}<span class="period">/неделя</span></h6>
+                                <hr>
+                                <ul class="fa-ul">
+                                    {% if type.value in [0,1] %}
+                                        <li><span class="fa-li"><i class="fas fa-check"></i></span>Возможность создать более 1 статьи</li>
+                                    {% else %}
+                                        <li><span class="fa-li"><i class="fas fa-check"></i></span><strong>Безлимитная генерация статей для вашего аккаунта</strong></li>
+                                    {% endif %}
+
+                                    <li><span class="fa-li"><i class="fas fa-check"></i></span>Базовые возможности генератора</li>
+
+                                    {% if type.value in [0] %}
+                                        <li class="text-muted"><span class="fa-li"><i class="fas fa-times"></i></span>Продвинутые возможности генератора</li>
+                                    {% else %}
+                                        <li><span class="fa-li"><i class="fas fa-check"></i></span>Продвинутые возможности генератора</li>
+                                    {% endif %}
+
+                                    {% if type.value in [0,1] %}
+                                        <li class="text-muted"><span class="fa-li"><i class="fas fa-times"></i></span>Свои модули</li>
+                                    {% else %}
+                                        <li><span class="fa-li"><i class="fas fa-check"></i></span>Свои модули</li>
+                                    {% endif %}
+                                </ul>
+
+                                {% if type.showButton %}
+                                    {% if type.isCurrent%}
+                                        <a onclick="(e)=>{e.preventDefault()}" class="btn btn-block btn-secondary text-uppercase" disabled>Текущий уровень</a>
+                                    {% else %}
+                                        <a href="{{ path('app_dashboard_subscription') }}" class="btn btn-block btn-primary text-uppercase"
+                                           data-controller="subscribeButton" data-subscribtion-type="{{ type.text }}">
+                                            Оформить
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
