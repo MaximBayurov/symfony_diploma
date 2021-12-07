@@ -28,7 +28,7 @@ class ModulesController extends AbstractController
         $user = $this->getUser();
         $userModules = $user->getGeneratorModules();
         if (!$userModules->contains($module)) {
-            return $this->json([], Response::HTTP_BAD_REQUEST);
+            return $this->json([], Response::HTTP_NOT_FOUND);
         }
     
         if ($moduleRepository->deleteByID($module->getId())) {
