@@ -1,0 +1,63 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block content %}
+    <section>
+
+        <h1 class="mt-4">Ваши модули</h1>
+
+        {% if app.session.flashBag.peek('flash_message')|length > 0 %}
+            {% for message in app.flashes('flash_message') %}
+                <div class="alert alert-{{ message.type }} " role="alert">
+                    {{ message.text }}
+                </div>
+            {%  endfor %}
+        {% endif %}
+
+        <table class="table table-hover table-bordered">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Модуль</th>
+                <th scope="col">Контент</th>
+                <th scope="col">Удалить</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for module in pagination %}
+            <tr>
+                <th scope="row">{{ module.id }}</th>
+                <td>{{ module.name }}</td>
+                <td>
+                    <pre class="code">
+                        {{ module.content }}
+                    </pre>
+                </td>
+                <td>
+                    <a href="{{ path('app_dashboard_modules') }}" class="text-danger" data-module-id="{{ module.id }}" data-controller="deleteModule"><i class="fas fa-trash"></i></a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        {{ knp_pagination_render(pagination) }}
+    </section>
+
+    <hr>
+
+    <section class="py-4">
+
+        <h1 class="mt-4">Добавить модуль</h1>
+
+        <div class="row">
+
+            <div class="col-xl-6">
+                {{ form_start(moduleForm) }}
+                {{ form_rest(moduleForm) }}
+
+                <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Добавить</button>
+                {{ form_end(moduleForm) }}
+            </div>
+        </div>
+    </section>
+{% endblock %}

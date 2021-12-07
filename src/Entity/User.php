@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -60,6 +62,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\OneToOne(targetEntity=Subscription::class, mappedBy="user", cascade={"persist", "remove"})
      */
     private ?Subscription $subscription;
+
+    /**
+     * @ORM\OneToMany(targetEntity=GeneratorModule::class, mappedBy="user")
+     */
+    private $generatorModules;
+
+    public function __construct()
+    {
+        $this->generatorModules = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -210,6 +222,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->subscription = $subscription;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|GeneratorModule[]
+     */
+    public function getGeneratorModules(): Collection
+    {
+        return $this->generatorModules;
+    }
+
+    public function addGeneratorModule(GeneratorModule $generatorModule): self
+    {
+        if (!$this->generatorModules->contains($generatorModule)) {
+            $this->generatorModules[] = $generatorModule;
+            $generatorModule->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGeneratorModule(GeneratorModule $generatorModule): self
+    {
+        if ($this->generatorModules->removeElement($generatorModule)) {
+            // set the owning side to null (unless already changed)
+            if ($generatorModule->getUser() === $this) {
+                $generatorModule->setUser(null);
+            }
+        }
 
         return $this;
     }
