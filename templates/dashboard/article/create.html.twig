@@ -1,0 +1,119 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% form_theme articleForm 'form/create_article_theme.html.twig' %}
+
+{% block content %}
+    <h1 class="mt-4">Создание статьи</h1>
+    <div class="row">
+
+        <div class="col-xl-6">
+            {% if app.session.flashBag.peek('flash_message')|length > 0 %}
+                {% for message in app.flashes('flash_message') %}
+                    <div class="alert alert-{{ message.type }} " role="alert">
+                        {{ message.text|raw }}
+                    </div>
+                {%  endfor %}
+            {% endif %}
+
+            {{ form_errors(articleForm.title) }}
+            {{ form_errors(articleForm.keyword) }}
+            {{ form_errors(articleForm.sizeFrom) }}
+            {{ form_errors(articleForm.sizeTo) }}
+            {{ form_errors(articleForm.words) }}
+            {{ form_errors(articleForm) }}
+
+            {{ form_start(articleForm) }}
+
+            {{ form_row(articleForm.theme) }}
+            <div class="form-label-group">
+                {{ form_widget(articleForm.title, {
+                    'attr': {'autofocus': true}
+                }) }}
+                {{ form_label(articleForm.title) }}
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <p class="card-title">Ключевое слово</p>
+                     {% for keywordField in articleForm.keyword %}
+
+                    <div class="form-label-group">
+                         {{ form_widget(keywordField, {'attr': {'placeholder': true}, 'required':  loop.index == 0}) }}
+                         {{ form_label(keywordField) }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-label-group">
+                        {{ form_widget(articleForm.sizeFrom) }}
+                        {{ form_label(articleForm.sizeFrom) }}
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-label-group">
+                        {{ form_widget(articleForm.sizeTo) }}
+                        {{ form_label(articleForm.sizeTo) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body" id="words-list">
+                    <p class="card-title">Продвигаемые слова</p>
+
+                    {% for wordsField in articleForm.words %}
+                        <div class="row">
+                            {% for field in wordsField %}
+                            <div class="col">
+                                <div class="form-label-group">
+                                    {{ form_widget(field, {
+                                        'attr': {'placeholder': true}
+                                    }) }}
+                                    {{ form_label(field) }}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                    {% if not articleForm.words.vars.disabled and is_granted('SUBSCRIPTION_PLUS') %}
+                    <button type="button"
+                            class="btn btn-outline-secondary btn-sm btn-block"
+                            data-row-selector="#words-list .row"
+                            data-controller="addWord">Добавить слово</button>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if is_granted('SUBSCRIPTION_PLUS') %}
+                {{ form_widget(articleForm.images) }}
+            {% endif %}
+
+            {{ form_row(articleForm.submit, {
+                'attr': {
+                    'class': 'btn btn-lg btn-primary btn-block text-uppercase'
+                },
+                'label': 'Создать',
+            }) }}
+            {{ form_end(articleForm) }}
+        </div>
+    </div>
+
+    {% if generatedArticle %}
+    <hr>
+
+    <h2 class="mt-4">Ваша статья</h2>
+
+    <hr>
+
+    <div class="row">
+
+        <div class="col-xl-6">
+            {{ generatedArticle|raw }}
+        </div>
+
+    </div>
+    {% endif %}
+{% endblock %}

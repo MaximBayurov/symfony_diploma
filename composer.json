@@ -15,6 +15,8 @@
         "fzaninotto/faker": "^1.5",
         "knplabs/knp-paginator-bundle": "^5.8",
         "liip/imagine-bundle": "^2.7",
+        "maxim/article-themes-bundle": "dev-master",
+        "oneup/flysystem-bundle": "^4.2",
         "sensio/framework-extra-bundle": "^6.2",
         "stof/doctrine-extensions-bundle": "^1.7",
         "symfony/console": "5.3.*",
@@ -83,5 +85,11 @@
         "symfony/maker-bundle": "^1.36",
         "symfony/stopwatch": "5.3.*",
         "symfony/web-profiler-bundle": "5.3.*"
-    }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "lib/ArticleThemesBundle"
+        }
+    ]
 }
