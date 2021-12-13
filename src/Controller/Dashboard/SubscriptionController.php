@@ -4,6 +4,7 @@ namespace App\Controller\Dashboard;
 
 use App\Entity\Subscription;
 use App\Entity\User;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -11,6 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class SubscriptionController extends AbstractController
 {
     #[Route('/dashboard/subscription', name: 'app_dashboard_subscription')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function index(): Response
     {
         /**

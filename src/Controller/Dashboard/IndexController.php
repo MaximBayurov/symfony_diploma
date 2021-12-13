@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class IndexController extends AbstractController
 {
     #[Route('/dashboard/', name: 'app_dashboard')]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function index(): Response
     {
         return $this->render('dashboard/index.html.twig', [

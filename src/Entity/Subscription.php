@@ -108,6 +108,11 @@ class Subscription
         return $this->level === self::LEVEL_TYPES['FREE']['TEXT'];
     }
     
+    public function isPro(): bool
+    {
+        return $this->level === self::LEVEL_TYPES['PRO']['TEXT'];
+    }
+    
     public function isValid(): bool
     {
         return $this->getExpiresAt() > new \DateTimeImmutable('now');

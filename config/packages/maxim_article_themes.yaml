@@ -1,0 +1,6 @@
+maxim_article_themes:
+  themes: [
+      '\Maxim\ArticleThemesBundle\ArticleThemes\BaseArticleTheme',
+      '\Maxim\ArticleThemesBundle\ArticleThemes\PhpArticleTheme',
+      '\Maxim\ArticleThemesBundle\ArticleThemes\FoodArticleTheme'
+  ]

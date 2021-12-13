@@ -1,0 +1,18 @@
+{
+    "name": "maxim/article-themes-bundle",
+    "type": "symfony-bundle",
+    "require": {
+        "php": "8.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Maxim\\ArticleThemesBundle\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Maxim Bayurov",
+            "email": "m.bayurov@agimagroup.ru"
+        }
+    ]
+}

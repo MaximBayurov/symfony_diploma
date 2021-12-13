@@ -1,0 +1,60 @@
+{% use 'bootstrap_4_layout.html.twig' %}
+
+
+{% block file_widget -%}
+    <{{ element|default('div') }} class="form-group">
+
+    {%- set label_attr = label_attr|merge({ class: (label_attr.class|default(''))|trim })|filter((value, key) => key != 'id') -%}
+    <label for="{{ form.vars.id }}" {% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}>
+        {%- if attr.placeholder is defined and attr.placeholder is not none -%}
+            {{- translation_domain is same as(false) ? attr.placeholder : attr.placeholder|trans({}, translation_domain) -}}
+        {%- endif -%}
+    </label>
+
+    {%- set type = type|default('file') -%}
+    {%- set input_lang = 'en' -%}
+    {% if app is defined and app.request is defined %}{%- set input_lang = app.request.locale -%}{%- endif -%}
+    {%- set attr = {lang: input_lang} | merge(attr) -%}
+    {{- block('form_widget_simple') -}}
+
+    </{{ element|default('div') }}>
+{% endblock %}
+
+{% block form_widget_simple -%}
+    {%- if type is not defined or type != 'hidden' -%}
+        {%- set className = ' form-control' -%}
+        {%- if type|default('') == 'file' -%}
+            {%- set className = ' form-control-file' -%}
+        {%- elseif type|default('') == 'range' -%}
+            {%- set className = ' form-control-range' -%}
+        {%- endif -%}
+        {%- set attr = attr|merge({class: (attr.class|default('') ~ className)|trim}) -%}
+    {%- endif -%}
+    {%- if type is defined and (type == 'range' or type == 'color') %}
+        {# Attribute "required" is not supported #}
+        {%- set required = false -%}
+    {% endif %}
+
+
+    {%- set type = type|default('text') -%}
+    {%- if type == 'range' or type == 'color' -%}
+        {# Attribute "required" is not supported #}
+        {%- set required = false -%}
+    {%- endif -%}
+    <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+{%- endblock form_widget_simple %}
+
+{% block form_label_errors %}
+{% endblock %}
+
+{% block form_errors -%}
+    {%- if errors|length > 0 -%}
+        <span class="alert alert-danger d-block">
+            {%- for error in errors -%}
+                <span class="d-block">
+                    <span class="form-error-icon badge badge-danger text-uppercase">{{ 'Error'|trans({}, 'validators') }}</span> <span class="form-error-message">{{ error.message }}</span>
+                </span>
+            {%- endfor -%}
+        </span>
+    {%- endif %}
+{%- endblock form_errors %}

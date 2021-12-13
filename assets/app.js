@@ -16,3 +16,4 @@ import 'bootstrap';
 
 import './js/dashboard';
 import './js/scripts';
+import './js/bootstrap_file_field';
