@@ -4,7 +4,9 @@ namespace App\Repository;
 
 use App\Entity\Article;
 use App\Entity\User;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -22,10 +24,11 @@ class ArticleRepository extends ServiceEntityRepository
     
     /**
      * @param int $userID
-     * @return bool
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @param DateTime $from
+     * @return int
+     * @throws NonUniqueResultException
      */
-    public function lastHourUserArticlesCount(int $userID): int
+    public function userArticlesCount(int $userID, DateTime $from): int
     {
         $queryBuilder = $this->createQueryBuilder('a');
         
@@ -33,8 +36,8 @@ class ArticleRepository extends ServiceEntityRepository
             ->select('COUNT(a.id) as count')
             ->andWhere('a.author = :userID')
             ->setParameter('userID', $userID)
-            ->andWhere('a.createdAt >= :lastHour')
-            ->setParameter('lastHour', new \DateTime('-1 hour'))
+            ->andWhere('a.createdAt >= :from')
+            ->setParameter('from', $from)
             ->orderBy('a.createdAt', 'DESC')
             ->getQuery()
             ->getOneOrNullResult()

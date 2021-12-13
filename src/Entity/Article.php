@@ -14,8 +14,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Article
 {
-    public const ARTICLES_PER_HOUR_LIMIT = 2;
-    
     use TimestampableEntity;
     
     /**
@@ -91,32 +89,7 @@ class Article
 
     public function getKeyword(): ?array
     {
-        if ($this->author && $this->author->getSubscription() && !$this->author->getSubscription()->isFree()) {
-            $default = [
-                'nominative' => '',
-                'genitive' => '',
-                'dative' => '',
-                'accusative' => '',
-                'instrumental' => '',
-                'prepositional' => '',
-                'plural' => '',
-            ];
-        } else {
-            $default = [
-                'nominative' => '',
-            ];
-        }
-        
-        $keywords = ! empty($this->keyword)
-            ? $this->keyword
-            : $default
-        ;
-    
-        $nominative = $keywords['nominative'];
-        array_walk($keywords, function (&$keyword) use ($nominative) {
-            $keyword = empty($keyword) ? $nominative : $keyword;
-        });
-        return $keywords;
+        return $this->keyword;
     }
 
     public function setKeyword(array $keyword): self

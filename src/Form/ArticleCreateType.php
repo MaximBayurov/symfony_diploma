@@ -3,9 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Article;
-use App\Services\ArticleThemeProvider;
 use App\Services\BaseArticleThemesProvider;
-use Maxim\ArticleThemesBundle\ArticleThemes\BaseArticleTheme;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -21,7 +19,7 @@ class ArticleCreateType extends AbstractType
 {
     public function __construct(
         private AuthorizationCheckerInterface $authorizationChecker,
-        private BaseArticleThemesProvider $themesProvider
+        private BaseArticleThemesProvider $themesProvider,
     ) {
     }
     
@@ -39,8 +37,8 @@ class ArticleCreateType extends AbstractType
             ->add('keyword', CollectionType::class, [
                 'entry_options' => [
                     'attr' => [
-                        'class' => 'form-control',
-                    ]
+                        'class' => 'form-control'
+                    ],
                 ],
             ])
             ->add('sizeFrom', NumberType::class, $this->setDefaultOptions('Размер статьи от'))

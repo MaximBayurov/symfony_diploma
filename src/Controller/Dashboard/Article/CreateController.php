@@ -9,6 +9,8 @@ use App\Form\ArticleCreateType;
 use App\Repository\ArticleRepository;
 use App\Services\ArticleGenerator;
 use App\Services\FileUploader;
+use App\Services\KeywordFormatter;
+use App\Services\SubscriptionChecker;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
@@ -44,11 +46,12 @@ class CreateController extends AbstractController
     public function index(
         Request $request,
         TranslatorInterface $translator,
-        ArticleRepository $articleRepository,
         RouterInterface $router,
         EntityManagerInterface $manager,
         FileUploader $articleFileUploader,
         ArticleGenerator $articleGenerator,
+        SubscriptionChecker $subscriptionChecker,
+        KeywordFormatter $keywordFormatter,
     ): Response {
         /**
          * @var User $user
@@ -56,11 +59,7 @@ class CreateController extends AbstractController
         $user = $this->getUser();
         
         $formOptions = [];
-        $articlesCount = $articleRepository->lastHourUserArticlesCount($user->getId());
-        if ($articlesCount >= Article::ARTICLES_PER_HOUR_LIMIT
-            && !$this->isGranted('SUBSCRIPTION_PRO')
-        ) {
-            
+        if (!$subscriptionChecker->canCreateArticle($user)) {
             $this->addFlash(
                 'flash_message',
                 new FlashMessage(
@@ -76,6 +75,7 @@ class CreateController extends AbstractController
         
         $article = new Article();
         $article->setAuthor($user);
+        $keywordFormatter->format($article);
         
         $form = $this->createForm(
             ArticleCreateType::class,
@@ -97,8 +97,8 @@ class CreateController extends AbstractController
             $article->setCreatedAt(new DateTime());
             $article->setUpdatedAt(new DateTime());
             
-//            $manager->persist($article);
-//            $manager->flush($article);
+            $manager->persist($article);
+            $manager->flush($article);
             
             $this->addFlash(
                 'flash_message',

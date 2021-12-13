@@ -11,7 +11,7 @@ class PhpArticleTheme extends ArticleTheme
     {
         $result = [];
         for ($i = 0; $i < 10; $i++) {
-            $result[] = $this->fucker->realText();
+            $result[] = $this->faker->realText();
         }
         return $result;
     }
@@ -20,7 +20,7 @@ class PhpArticleTheme extends ArticleTheme
     {
         $result = [];
         for ($i = 0; $i < 10; $i++) {
-            $result[] = $this->fucker->realText(30);
+            $result[] = $this->faker->realText(30);
         }
         return $result;
     }
@@ -44,7 +44,7 @@ class PhpArticleTheme extends ArticleTheme
     {
         $result = [];
         for ($i = 0; $i < 5; $i++) {
-            $result[] = $this->fucker->realText(30);
+            $result[] = $this->faker->realText(30);
         }
         return $result;
     }

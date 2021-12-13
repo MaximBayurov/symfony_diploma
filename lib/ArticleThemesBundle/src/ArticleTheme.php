@@ -8,21 +8,23 @@ use League\Flysystem\Filesystem;
 
 abstract class ArticleTheme
 {
-    protected Generator $fucker;
+    protected Generator $faker;
     
-    public function __construct(
-        protected Filesystem $filesystem,
-        protected string $filesystemPath,
-    )
+    public function __construct()
     {
-        $this->fucker = Factory::create();
+        $this->faker = Factory::create();
     }
     
     abstract public function getAllowedParagraphs(): array;
+    
     abstract public function getAllowedTitles(): array;
+    
     abstract public function getImagesSubdirectory(): string;
+    
     abstract public function getAllowedArticleTitles(): array;
+    
     abstract public function getCode(): string;
+    
     abstract public function getLabel(): string;
     
     public function getAllowedModules(): array
@@ -80,7 +82,7 @@ abstract class ArticleTheme
     
     protected function loadModule(string $module): string
     {
-        return file_get_contents('../modules/'.$module.'.twig');
+        return file_get_contents('../modules/' . $module . '.twig');
     }
     
     public function getParagraphs(int $count): array
@@ -114,28 +116,28 @@ abstract class ArticleTheme
         return $titles[$key];
     }
     
-    public function getImage(): string
+    public function getImage(Filesystem $filesystem, string $filesystemPath): string
     {
-        $images = $this->getAllowedImages();
+        $images = $this->getAllowedImages($filesystem, $filesystemPath);
         $key = array_rand($images);
         
         return $images[$key];
     }
     
-    public function getAllowedImages(): array
+    public function getAllowedImages(Filesystem $filesystem, string $filesystemPath): array
     {
         $subdirectoryName = $this->getImagesSubdirectory();
-        $subdirectory = $this->filesystem->listContents('/')->filter(function ($file) use ($subdirectoryName) {
+        $subdirectory = $filesystem->listContents('/')->filter(function ($file) use ($subdirectoryName) {
             return $file->isDir() && $file->path() == $subdirectoryName;
         })->toArray();
-    
+        
         $images = [];
         if ($subdirectory = reset($subdirectory)) {
-            $images = $this->filesystem->listContents($subdirectory->path())->filter(function ($file) {
+            $images = $filesystem->listContents($subdirectory->path())->filter(function ($file) {
                 return !$file->isDir();
             })->toArray();
-            array_walk($images, function (&$image) {
-                $image = $this->filesystemPath .'/'. $image->path();
+            array_walk($images, function (&$image) use ($filesystemPath) {
+                $image = $filesystemPath . '/' . $image->path();
             });
         }
         
