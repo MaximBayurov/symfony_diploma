@@ -97,8 +97,8 @@ class CreateController extends AbstractController
             $article->setCreatedAt(new DateTime());
             $article->setUpdatedAt(new DateTime());
             
-            $manager->persist($article);
-            $manager->flush($article);
+//            $manager->persist($article);
+//            $manager->flush($article);
             
             $this->addFlash(
                 'flash_message',

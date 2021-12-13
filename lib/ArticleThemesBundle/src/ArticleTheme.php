@@ -27,64 +27,6 @@ abstract class ArticleTheme
     
     abstract public function getLabel(): string;
     
-    public function getAllowedModules(): array
-    {
-        return [
-            'text',
-            'media',
-            'media_left',
-            'media_left_one_paragraph',
-            'media_right_one_paragraph',
-            'subtitle_contents',
-            'title_contents',
-            'two_column_text',
-        ];
-    }
-    
-    public function getModules(int $min, int $max, array $additionalModules = []): array
-    {
-        $modules = $this->getAllowedModules();
-        if ($additionalModules) {
-            array_walk($modules, function (&$module) {
-                $module = $this->loadModule($module);
-            });
-            unset($module);
-            $modules = array_merge(
-                $modules,
-                $additionalModules
-            );
-            
-            $count = random_int($min, $max);
-            while (count($modules) < $count) {
-                $modules = array_merge($modules, $modules);
-            }
-            
-            $keys = array_rand($modules, $count);
-            $result = [];
-            foreach ($keys as $key) {
-                $result[] = $modules[$key];
-            }
-        } else {
-            $count = random_int($min, $max);
-            while (count($modules) < $count) {
-                $modules = array_merge($modules, $modules);
-            }
-            
-            $keys = array_rand($modules, $count);
-            $result = [];
-            foreach ($keys as $key) {
-                $result[] = $this->loadModule($modules[$key]);
-            }
-        }
-        
-        return $result;
-    }
-    
-    protected function loadModule(string $module): string
-    {
-        return file_get_contents('../modules/' . $module . '.twig');
-    }
-    
     public function getParagraphs(int $count): array
     {
         $paragraphs = $this->getAllowedParagraphs();

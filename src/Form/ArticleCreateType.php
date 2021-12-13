@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Article;
-use App\Services\BaseArticleThemesProvider;
+use Maxim\ArticleThemesBundle\BaseArticleThemesProvider;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;

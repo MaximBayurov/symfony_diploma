@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Entity\Article;
+use League\Flysystem\Filesystem;
 use Maxim\ArticleThemesBundle\ArticleTheme;
 use Maxim\ArticleThemesBundle\Exceptions\ThemeNotProvidedException;
+use Maxim\ArticleThemesBundle\BaseArticleThemesProvider;
 use Twig\Environment;
 
 class ArticleGenerator
@@ -15,6 +17,9 @@ class ArticleGenerator
         private Environment $twig,
         private BaseArticleThemesProvider $articleThemesProvider,
         private PasteWords $wordsPaster,
+        private Filesystem $imgFileSystem,
+        private string $imgFileSystemPath,
+        private ModulesProvider $modulesProvider
     ) {
     }
     
@@ -32,7 +37,7 @@ class ArticleGenerator
         $result = $this->renderArticleTitle($article, $theme);
         
         $userModules = $this->getUserModules($article);
-        $modules = $theme->getModules(
+        $modules = $this->modulesProvider->getModules(
             $article->getSizeFrom(),
             $article->getSizeTo(),
             $userModules
@@ -88,7 +93,7 @@ class ArticleGenerator
                 $imagesCount = count($article->getImages());
                 $imageSrc = $articleImages[random_int(0, $imagesCount - 1)];
             } else {
-                $imageSrc = $theme->getImage();
+                $imageSrc = $theme->getImage($this->imgFileSystem, $this->imgFileSystemPath);
             }
             
             $module = [

@@ -5,5 +5,14 @@
         https://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <service id="Maxim\ArticleThemesBundle\BaseArticleThemesProvider"
+                 class="Maxim\ArticleThemesBundle\BaseArticleThemesProvider">
+            <argument type="collection"/>
+        </service>
+
+        <service id="maxim_article_themes.article_themes.base_article_theme" class="Maxim\ArticleThemesBundle\ArticleThemes\BaseArticleTheme"/>
+        <service id="maxim_article_themes.article_themes.food_article_theme" class="Maxim\ArticleThemesBundle\ArticleThemes\FoodArticleTheme"/>
+        <service id="maxim_article_themes.article_themes.php_article_theme" class="Maxim\ArticleThemesBundle\ArticleThemes\PhpArticleTheme"/>
+
     </services>
 </container>
