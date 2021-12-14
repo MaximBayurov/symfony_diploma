@@ -56,7 +56,13 @@ class ArticleGenerator
     {
         $keyword = $article->getKeyword();
         
-        return 'Статья о ' . $keyword['prepositional'] ?? $keyword['nominative'];
+        if (key_exists('prepositional', $keyword)) {
+            $keyword['prepositional'] = $keyword['prepositional'] ?? $keyword['nominative'];
+        }
+        
+        return key_exists('prepositional', $keyword)
+            ? 'Статья о ' . $keyword['prepositional']
+            : 'Статья о ' . $keyword['nominative'];
     }
     
     private function renderArticleTitle(Article $article, ArticleTheme $theme): string

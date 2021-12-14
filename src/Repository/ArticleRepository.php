@@ -7,6 +7,7 @@ use App\Entity\User;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -44,5 +45,44 @@ class ArticleRepository extends ServiceEntityRepository
         ;
         
         return (int)$result['count'];
+    }
+    
+    public function getUserLatest(int $userID): QueryBuilder
+    {
+        $queryBuilder = $this->createQueryBuilder('a');
+    
+        return $queryBuilder
+            ->andWhere('a.author = :userID')
+            ->setParameter('userID', $userID)
+            ->orderBy('a.createdAt', 'DESC');
+    }
+    
+    public function hasUserDescription(int $userID)
+    {
+    
+        $queryBuilder = $this->createQueryBuilder('a');
+    
+        $result = $queryBuilder
+            ->select('COUNT(a.id) as count')
+            ->andWhere('a.author = :userID')
+            ->setParameter('userID', $userID)
+            ->andWhere('a.description IS NOT NULL')
+            ->getQuery()
+            ->getOneOrNullResult();
+        
+        return $result['count'] > 0;
+    }
+    
+    public function findOneByID(int $articleID, int $userID): ?Article
+    {
+        $queryBuilder = $this->createQueryBuilder('a');
+    
+        return $queryBuilder
+            ->andWhere('a.id = :articleID')
+            ->setParameter('articleID', $articleID)
+            ->andWhere('a.author = :userID')
+            ->setParameter('userID', $userID)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

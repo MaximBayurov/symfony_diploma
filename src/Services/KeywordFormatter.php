@@ -10,7 +10,7 @@ class KeywordFormatter
     public function format(Article $article): void
     {
         if (!$article->getAuthor()->getSubscription()->isFree()
-            && !$article->getAuthor()->getSubscription()->isValid()) {
+            && $article->getAuthor()->getSubscription()->isValid()) {
             
             $default = [
                 'nominative' => '',
@@ -27,8 +27,8 @@ class KeywordFormatter
             ];
         }
         
-        $keywords = !empty($this->keyword)
-            ? $this->keyword
+        $keywords = !empty($article->getKeyword())
+            ? $article->getKeyword()
             : $default;
         
         $nominative = $keywords['nominative'];
