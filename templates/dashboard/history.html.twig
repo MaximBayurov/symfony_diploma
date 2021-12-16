@@ -1,0 +1,55 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block content %}
+    <h1 class="mt-4">История статей</h1>
+
+    <div class="row">
+
+        <div class="col-xl-8">
+
+            <span id="messages-list">
+                {% if app.session.flashBag.peek('flash_message')|length > 0 %}
+                    {% for message in app.flashes('flash_message') %}
+                        <div class="alert alert-{{ message.type }} " role="alert">
+                            {{ message.text }}
+                        </div>
+                    {%  endfor %}
+                {% endif %}
+            </span>
+
+            <table class="table table-hover table-bordered">
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Название</th>
+                    <th scope="col">Описание</th>
+                    <th scope="col">Просмотр</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for article in pagination %}
+                    <tr>
+                        <th scope="row">{{ article.id }}</th>
+                        <td>{{ article.title }}</td>
+                        <td data-controller="editableField" data-messages-list="#messages-list"
+                            data-field-name="description" data-buttons="#history-buttons button" data-id="{{ article.id }}">
+                            {{ article.description|generate_for_empty(article) }}
+                        </td>
+                        <td><a href="{{ path('app_dashboard_article_detail', {'id': article.id}) }}"><i class="fas fa-eye"></i></a> </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="d-flex">
+                <div>
+                    {{ knp_pagination_render(pagination) }}
+                </div>
+                <div  id="history-buttons" class="ml-auto">
+                    <button type="button" class="btn btn-primary" hidden data-change="Y">Изменить</button>
+                    <button type="button" class="btn btn-danger" hidden data-cancel="Y">Отменить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

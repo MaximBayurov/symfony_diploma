@@ -17,6 +17,15 @@ liip_imagine:
                 cache_prefix: media/cache
                 visibility: public
 
+    loaders:
+        articles_flysystem_loader:
+            flysystem:
+                filesystem_service: oneup_flysystem.uploads_articles_filesystem
+        img_flysystem_loader:
+            flysystem:
+                filesystem_service: oneup_flysystem.img_filesystem
+    data_loader: articles_flysystem_loader
+
     filter_sets:
         cache: ~
 

@@ -14,15 +14,15 @@ use App\Services\SubscriptionChecker;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
+use Maxim\ArticleThemesBundle\Exceptions\ThemeNotProvidedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Twig\Error\LoaderError;
-use Twig\Error\SyntaxError;
 
 class CreateController extends AbstractController
 {
@@ -31,15 +31,16 @@ class CreateController extends AbstractController
     /**
      * @param Request $request
      * @param TranslatorInterface $translator
-     * @param ArticleRepository $articleRepository
      * @param RouterInterface $router
      * @param EntityManagerInterface $manager
      * @param FileUploader $articleFileUploader
      * @param ArticleGenerator $articleGenerator
+     * @param SubscriptionChecker $subscriptionChecker
+     * @param KeywordFormatter $keywordFormatter
+     * @param ArticleRepository $articleRepository
      * @return Response
      * @throws NonUniqueResultException
-     * @throws LoaderError
-     * @throws SyntaxError
+     * @throws ThemeNotProvidedException
      */
     #[Route('/dashboard/article/create', name: 'app_dashboard_article_create')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
@@ -52,6 +53,7 @@ class CreateController extends AbstractController
         ArticleGenerator $articleGenerator,
         SubscriptionChecker $subscriptionChecker,
         KeywordFormatter $keywordFormatter,
+        ArticleRepository $articleRepository,
     ): Response {
         /**
          * @var User $user
@@ -73,8 +75,11 @@ class CreateController extends AbstractController
             $formOptions['disabled'] = true;
         }
         
-        $article = new Article();
-        $article->setAuthor($user);
+        $article = $this->createArticle(
+            $request->query->getInt('id'),
+            $articleRepository,
+            $user
+        );
         $keywordFormatter->format($article);
         
         $form = $this->createForm(
@@ -86,9 +91,13 @@ class CreateController extends AbstractController
         
         if ($form->isSubmitted() && $form->isValid()) {
             
+            $article = $form->getData();
+            
             if ($images = $article->getImages()) {
                 foreach ($images as &$image) {
-                    $image = $articleFileUploader->uploadFile($image, $image->getPathname());
+                    if ($image instanceof UploadedFile) {
+                        $image = $articleFileUploader->uploadFile($image, $image->getPathname());
+                    }
                 }
                 unset($image);
                 $article->setImages($images);
@@ -97,8 +106,11 @@ class CreateController extends AbstractController
             $article->setCreatedAt(new DateTime());
             $article->setUpdatedAt(new DateTime());
             
-//            $manager->persist($article);
-//            $manager->flush($article);
+            $content = $articleGenerator->generate($article);
+            $article->setContent($content);
+            
+            $manager->persist($article);
+            $manager->flush($article);
             
             $this->addFlash(
                 'flash_message',
@@ -109,7 +121,7 @@ class CreateController extends AbstractController
             
             $request->getSession()->set(
                 self::GENERATED_ARTICLE_SK,
-                $articleGenerator->generate($article)
+                $content
             );
             
             return $this->redirectToRoute('app_dashboard_article_create');
@@ -128,9 +140,27 @@ class CreateController extends AbstractController
     {
         if ($article = $request->getSession()->get(self::GENERATED_ARTICLE_SK)) {
             $request->getSession()->remove(self::GENERATED_ARTICLE_SK);
+            
             return $article;
         }
         
         return null;
+    }
+    
+    private function createArticle(int $articleID, ArticleRepository $repository, User $user): Article
+    {
+        /**
+         * @var Article $article
+         */
+        if ($articleID > 0) {
+            $article = clone $repository->findOneByID($articleID, $user->getId());
+        }
+        
+        if (empty($article)) {
+            $article = new Article();
+            $article->setAuthor($user);
+        }
+        
+        return $article;
     }
 }

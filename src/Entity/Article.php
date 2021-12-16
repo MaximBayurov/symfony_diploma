@@ -7,6 +7,8 @@ use App\Validator\MoreThanSizeFrom;
 use App\Validator\Words;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use ReflectionClass;
+use ReflectionException;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -69,6 +71,16 @@ class Article
      * @ORM\JoinColumn(nullable=false)
      */
     private $author;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $description;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $content;
 
     public function getId(): ?int
     {
@@ -187,6 +199,62 @@ class Article
     public function setAuthor(?User $author): self
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+    
+    /**
+     * @throws ReflectionException
+     */
+    public function hasField(string $name): bool
+    {
+        $reflection = new ReflectionClass($this::class);
+        return $reflection->hasProperty($name);
+    }
+    
+    /**
+     * @throws ReflectionException
+     */
+    public function setField(string $name, mixed $value): bool
+    {
+        $reflection = new ReflectionClass($this::class);
+        $setter  = 'set'. ucfirst(mb_strtolower($name));
+        if (!$reflection->hasMethod($setter)) {
+            return false;
+        }
+        
+        $this->$setter($value);
+        
+        return true;
+    }
+    
+    public function __clone(): void
+    {
+        $this->id = null;
+        $this->createdAt = null;
+        $this->updatedAt = null;
+    }
+
+    public function getContent(): ?string
+    {
+        return $this->content;
+    }
+
+    public function setContent(?string $content): self
+    {
+        $this->content = $content;
 
         return $this;
     }

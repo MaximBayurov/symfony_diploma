@@ -1,0 +1,22 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block content %}
+<div class="row">
+
+    <div class="col-xl-6">
+        {{ article.content|raw }}
+    </div>
+
+</div>
+
+<hr>
+
+<div class="row my-4">
+
+    <div class="col-xl-6">
+
+        <a href="{{ path('app_dashboard_article_create', {'id': article.id}) }}" class="btn btn-primary">Попробовать еще раз</a>
+    </div>
+
+</div>
+{% endblock %}
