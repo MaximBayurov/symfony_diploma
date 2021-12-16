@@ -25,24 +25,30 @@ class ArticleRepository extends ServiceEntityRepository
     
     /**
      * @param int $userID
-     * @param DateTime $from
+     * @param DateTime|null $from
      * @return int
      * @throws NonUniqueResultException
      */
-    public function userArticlesCount(int $userID, DateTime $from): int
+    public function userArticlesCount(int $userID, ?DateTime $from = null): int
     {
         $queryBuilder = $this->createQueryBuilder('a');
         
-        $result = $queryBuilder
+        $queryBuilder
             ->select('COUNT(a.id) as count')
             ->andWhere('a.author = :userID')
             ->setParameter('userID', $userID)
-            ->andWhere('a.createdAt >= :from')
-            ->setParameter('from', $from)
-            ->orderBy('a.createdAt', 'DESC')
+            ->orderBy('a.createdAt', 'DESC');
+        
+        if ($from) {
+            $queryBuilder
+                ->andWhere('a.createdAt >= :from')
+                ->setParameter('from', $from)
+            ;
+        }
+        
+        $result = $queryBuilder
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getOneOrNullResult();
         
         return (int)$result['count'];
     }
@@ -50,7 +56,7 @@ class ArticleRepository extends ServiceEntityRepository
     public function getUserLatest(int $userID): QueryBuilder
     {
         $queryBuilder = $this->createQueryBuilder('a');
-    
+        
         return $queryBuilder
             ->andWhere('a.author = :userID')
             ->setParameter('userID', $userID)
@@ -59,9 +65,9 @@ class ArticleRepository extends ServiceEntityRepository
     
     public function hasUserDescription(int $userID)
     {
-    
+        
         $queryBuilder = $this->createQueryBuilder('a');
-    
+        
         $result = $queryBuilder
             ->select('COUNT(a.id) as count')
             ->andWhere('a.author = :userID')
@@ -76,12 +82,25 @@ class ArticleRepository extends ServiceEntityRepository
     public function findOneByID(int $articleID, int $userID): ?Article
     {
         $queryBuilder = $this->createQueryBuilder('a');
-    
+        
         return $queryBuilder
             ->andWhere('a.id = :articleID')
             ->setParameter('articleID', $articleID)
             ->andWhere('a.author = :userID')
             ->setParameter('userID', $userID)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+    
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function getOneUserLatest(int $getId): ?Article
+    {
+        $queryBuilder = $this->getUserLatest($getId);
+        
+        return $queryBuilder
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
     }

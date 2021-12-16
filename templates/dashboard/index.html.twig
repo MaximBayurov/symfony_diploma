@@ -14,36 +14,40 @@
         <div class="card-columns dashboard">
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">13</h5>
+            <h5 class="card-title">{{ statistic['total'] }}</h5>
             <p class="card-text">Всего статей создано.</p>
         </div>
     </div>
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">8</h5>
+            <h5 class="card-title">{{ statistic['thisMonth'] }}</h5>
             <p class="card-text">Создано в этом месяце.</p>
         </div>
     </div>
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">PLUS</h5>
+            <h5 class="card-title">{{ subscription.level['TEXT'] }}</h5>
             <p class="card-text">Ваш уровень подписки.</p>
-            <a href="#" class="btn btn-primary">Улучшить</a>
+            {% if not subscription.pro %}
+                <a href="{{ path('app_dashboard_subscription') }}" class="btn btn-primary">Улучшить</a>
+            {% endif %}
         </div>
     </div>
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">Создать статью</h5>
-            <a href="#" class="btn btn-primary">Создать</a>
+            <a href="{{ path('app_dashboard_article_create') }}" class="btn btn-primary">Создать</a>
         </div>
     </div>
+    {% if lastArticle %}
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">Почему квадрат не круглый?</h5>
-            <p class="card-text">При генерации контента <b>круг</b> статьи, вы можете наполнить его нужными словами <b>круг</b> для вашего бизнеса. Столько <b>круг</b> сколько <b>круг</b> нужно. Хоть все ими <b>круг</b> <b>круг</b> <b>круг</b> заполоните!.</p>
-            <a href="#" class="btn btn-primary">Подробнее</a>
+            <h5 class="card-title">{{ lastArticle.title }}</h5>
+            <p class="card-text">{{ lastArticle.description|generate_for_empty(lastArticle) }}</p>
+            <a href="{{ path('app_dashboard_article_detail', {id: lastArticle.id}) }}" class="btn btn-primary">Подробнее</a>
         </div>
     </div>
+    {% endif %}
 </div>
     </div>
 </div>
