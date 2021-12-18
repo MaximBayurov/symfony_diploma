@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ArticleRepository;
+use App\Validator\Keyword;
 use App\Validator\MoreThanSizeFrom;
 use App\Validator\Words;
 use Doctrine\ORM\Mapping as ORM;
@@ -27,11 +28,13 @@ class Article
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Укажите тему статьи! Она не может быть пустой")
      */
     private $theme;
 
     /**
      * @ORM\Column(type="json", nullable=true)
+     * @Keyword()
      */
     private $keyword = [];
 
@@ -155,7 +158,7 @@ class Article
     {
         $default = [
           [
-              'promotedWord' => '',
+              'word' => '',
               'count' => '',
           ]
         ];
@@ -169,7 +172,7 @@ class Article
     {
         $words = $this->getWords();
         $first = reset($words);
-        return empty($first['promotedWord']);
+        return empty($first['word']);
     }
 
     public function setWords(array $words): self

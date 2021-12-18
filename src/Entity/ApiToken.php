@@ -81,4 +81,9 @@ class ApiToken
 
         return $this;
     }
+    
+    public function isExpired(): bool
+    {
+        return $this->getExpiresAt() < new \DateTimeImmutable('now');
+    }
 }

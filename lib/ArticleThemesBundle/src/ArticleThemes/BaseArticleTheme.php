@@ -32,7 +32,7 @@ class BaseArticleTheme extends ArticleTheme
     
     public function getCode(): string
     {
-        return '-';
+        return 'basic';
     }
     
     public function getLabel(): string

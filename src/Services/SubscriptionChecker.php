@@ -23,7 +23,7 @@ class SubscriptionChecker
      */
     public function canCreateArticle(User $user): bool
     {
-        if ($this->authorizationChecker->isGranted('SUBSCRIPTION_PRO')) {
+        if ($user->getSubscription()->isValid() && $this->authorizationChecker->isGranted('SUBSCRIPTION_PRO')) {
             return true;
         }
         $articlesCount = $this->articleRepository->userArticlesCount($user->getId(), new DateTime('-1 hour'));

@@ -1,0 +1,26 @@
+POST https://localhost:8000/api/v1/articles/create
+Accept: application/json; charset=utf-8
+Authorization: Bearer 76d380bded61915c86a3000f095a19ce358e0541
+Content-Type: application/json; charset=utf-8
+
+{
+   "theme": "basic",
+   "keyword": [
+       "EXAMPLE",
+       "EXAMPLE",
+       "EXAMPLE",
+       "EXAMPLE",
+       "EXAMPLE",
+       "EXAAAAAMPLE",
+       "EXAMPLES"
+   ],
+   "title": "Тестовая статья",
+   "size": 1,
+   "words": [
+       {
+           "word": "EXAMPLE",
+           "count": 1
+       }
+   ],
+   "images": ["https://via.placeholder.com/250x250"]
+}

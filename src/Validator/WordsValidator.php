@@ -11,17 +11,17 @@ class WordsValidator extends ConstraintValidator
     {
         /* @var $constraint Words */
 
-        if (null === $value[0]['promotedWord'] || '' === $value[0]['promotedWord']) {
+        if (null === $value[0]['word'] || '' === $value[0]['word']) {
             return;
         }
 
         foreach ($value as $word) {
-            if (empty($word['promotedWord'])) {
+            if (empty($word['word'])) {
                 $this->context->buildViolation($constraint->message)
                     ->addViolation();
             }
     
-            $word['count'] = $word['count'] ?? 0;
+            $word['count'] = (int)$word['count'] ?? 0;
             if (!is_numeric($word['count'])) {
                 $this->context->buildViolation($constraint->countMessage)
                     ->addViolation();

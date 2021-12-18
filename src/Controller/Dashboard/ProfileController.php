@@ -2,6 +2,7 @@
 
 namespace App\Controller\Dashboard;
 
+use App\Entity\FlashMessage;
 use App\Entity\User;
 use App\Events\User\BeforeProfileChangedEvent;
 use App\Events\UserEvent;
@@ -15,6 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ProfileController extends AbstractController
 {
@@ -24,7 +26,8 @@ class ProfileController extends AbstractController
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
         EntityManagerInterface $entityManager,
-        EventDispatcherInterface $dispatcher
+        EventDispatcherInterface $dispatcher,
+        TranslatorInterface $translator,
     ): Response {
         
         /**
@@ -33,6 +36,16 @@ class ProfileController extends AbstractController
          */
         $currentUser = clone $this->getUser();
         $user = $this->getUser();
+        
+        if ($user->getApiToken()->isExpired()) {
+            $this->addFlash('flash_message',
+                new FlashMessage(
+                    $translator->trans('Api token expired'),
+                    'warning'
+                )
+            );
+        }
+        
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
     

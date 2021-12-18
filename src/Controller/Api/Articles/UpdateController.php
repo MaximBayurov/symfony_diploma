@@ -3,9 +3,8 @@
 namespace App\Controller\Api\Articles;
 
 use App\Entity\Article;
-use App\Entity\FlashMessage;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use ReflectionException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +14,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class UpdateController extends AbstractController
 {
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     #[Route('/api/v1/articles/{id}/update', name: 'api_articles_update')]
     public function index(

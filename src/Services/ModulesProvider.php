@@ -38,6 +38,9 @@ class ModulesProvider
             }
             
             $keys = array_rand($modules, $count);
+            if (!is_array($keys)) {
+                $keys = [$keys];
+            }
             $result = [];
             foreach ($keys as $key) {
                 $result[] = $modules[$key];
@@ -49,6 +52,9 @@ class ModulesProvider
             }
             
             $keys = array_rand($modules, $count);
+            if (!is_array($keys)) {
+                $keys = [$keys];
+            }
             $result = [];
             foreach ($keys as $key) {
                 $result[] = $this->loadModule($modules[$key]);

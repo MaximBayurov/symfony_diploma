@@ -32,6 +32,7 @@ class ArticleCreateType extends AbstractType
             ->add('theme', ChoiceType::class, [
                 'choices' => $this->themesProvider->getThemesList(),
                 'label' => 'Тематика',
+                'invalid_message' => 'Некорректно указана тема'
             ])
             ->add('title', TextType::class, $this->setDefaultOptions('Заголовок статьи'))
             ->add('keyword', CollectionType::class, [
@@ -90,6 +91,7 @@ class ArticleCreateType extends AbstractType
             ],
             'label' => $fieldName,
             'required' => false,
+            'invalid_message' => 'Некорректно указано поле - ' . mb_strtolower($fieldName)
         ];
     }
 }

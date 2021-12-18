@@ -9,7 +9,7 @@ export default class extends Controller {
 			let elements = $(event.currentTarget.dataset.rowSelector);
 			let element = elements.first().clone();
 
-			const map = (new Map()).set(0,'promotedWord').set(1, 'count')
+			const map = (new Map()).set(0,'word').set(1, 'count')
 			element.find('input').each((index, input) => {
 				input = $(input);
 				input.val('');

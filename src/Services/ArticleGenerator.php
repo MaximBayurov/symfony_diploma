@@ -128,7 +128,7 @@ class ArticleGenerator
             for ($i = 0; $i < $word['count']; $i++) {
                 $randomKey = array_rand($this->paragraphs);
                 $this->paragraphs[$randomKey] =
-                    $this->wordsPaster->paste($this->paragraphs[$randomKey], $word['promotedWord']);
+                    $this->wordsPaster->paste($this->paragraphs[$randomKey], $word['word']);
             }
         }
     }
