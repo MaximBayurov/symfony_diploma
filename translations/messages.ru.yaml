@@ -30,3 +30,4 @@ Only author can view the article: 'Только автор может просм
 Update article description help: 'Вы можете изменить описание статьи. Просто нажмите на него.'
 Article successful updated: 'Статья #id успешно обновлена'
 Failed to update article: 'Не удалось обновить статью'
+Subscription expires on expiresAt: 'Срок действия подписки истекает expiresAt'
