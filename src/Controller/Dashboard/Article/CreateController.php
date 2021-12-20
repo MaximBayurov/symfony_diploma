@@ -153,7 +153,10 @@ class CreateController extends AbstractController
          * @var Article $article
          */
         if ($articleID > 0) {
-            $article = clone $repository->findOneByID($articleID, $user->getId());
+            $article = $repository->findOneByID($articleID, $user->getId());
+            $article = $article
+                ? clone $article
+                : null;
         }
         
         if (empty($article)) {

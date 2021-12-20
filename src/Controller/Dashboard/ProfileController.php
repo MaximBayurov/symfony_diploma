@@ -37,7 +37,7 @@ class ProfileController extends AbstractController
         $currentUser = clone $this->getUser();
         $user = $this->getUser();
         
-        if ($user->getApiToken()->isExpired()) {
+        if ($user->getApiToken() && $user->getApiToken()->isExpired()) {
             $this->addFlash('flash_message',
                 new FlashMessage(
                     $translator->trans('Api token expired'),
